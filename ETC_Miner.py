@@ -1,21 +1,26 @@
 # GUI Mining Profit Calculator
-# Version 4.1
-# Price of ETC-GBP is shown at the start
-# Rather than waiting for user to calculate profit
+# Version 5
+# Need to Add a menu bar - with the ability to select different currencies
+# Need to add a function to facilitate setting the currency for all areas of the program
+# Just need to get the correct price of ETC, ie ETC-GBP/ETC-USD etc
+# Need to create a list to store currency symbols that can be accessed via indexing
 
 # Import necessary modules
 
 import tkinter as tk
 from tkinter import ttk
+from tkinter import Menu
 from tkinter import messagebox
 import yfinance as yf
 from selenium import webdriver
 from etc_network_hash import etc_network_hashrate,etc_block_reward,etc_block_time
 
-# Get price of ETC-GBP
-etc = yf.Ticker("ETC-GBP")
-etc_hist = etc.history(period="1d")
-price = round(etc_hist.iloc[0,3],2)
+# List of currency symbols
+# + List of ETC pairs
+currency_symbols = ["£","$","€"]
+etc_pairs = ["ETC-GBP","ETC-USD","ETC-EUR"]
+
+etc_pair_index = 0 # Set default value
 
 # Set browser
 
@@ -58,11 +63,15 @@ def set_values():
     calculate_etc(nhash,user_hash_rate_var,block_reward,avg_time)
 
 def mining_profit(total_electricty,price_per_kwh,coin_price,coin_per_day):
+
+    i = menu_bar_index.get() # get menu_bar index to set currency symbol
+
     cost_per_day = round((total_electricty / 1000) * price_per_kwh * 24,2)
     gross_profit_per_day = round(coin_per_day * coin_price,2)
     net_profit_per_day = round(gross_profit_per_day - cost_per_day,2)
 
-    profit = "It cost £{0} per day to mine £{1} worth of ETC, generating £{2} per day in profit".format(cost_per_day,
+    profit = "It cost {0}{1} per day to mine {0}{2} worth of ETC, generating {0}{3} per day in profit".format(currency_symbols[i],
+                                                                                                cost_per_day,
                                                                                                 gross_profit_per_day,
                                                                                                 net_profit_per_day)
 
@@ -71,17 +80,17 @@ def mining_profit(total_electricty,price_per_kwh,coin_price,coin_per_day):
     yearly_mined = round(monthly_mined * 12,4)
 
     if net_profit_per_day > 0:
-        daily_profit.config(text="Daily Profit = £{0} | Daily mined {1}".format(net_profit_per_day,round(coin_per_day,4)),fg=profit_fg_colour)
-        weekly_profit.config(text="Weekly Profit = £{0} | Weekly mined {1}".format(round(net_profit_per_day * 7,2),weekly_mined),fg=profit_fg_colour)
-        monthly_profit.config(text="Monthly Profit = £{0} | Monthly mined {1}".format(round(net_profit_per_day * 30,2),monthly_mined),fg=profit_fg_colour)
-        yearly_profit.config(text="Yearly Profit = £{0} | Yearly mined {1}".format(round(net_profit_per_day * 365,2),yearly_mined),fg=profit_fg_colour)
+        daily_profit.config(text="Daily Profit = {0}{1} | Daily mined {2}".format(currency_symbols[i],net_profit_per_day,round(coin_per_day,4)),fg=profit_fg_colour)
+        weekly_profit.config(text="Weekly Profit = {0}{1} | Weekly mined {2}".format(currency_symbols[i],round(net_profit_per_day * 7,2),weekly_mined),fg=profit_fg_colour)
+        monthly_profit.config(text="Monthly Profit = {0}{1} | Monthly mined {2}".format(currency_symbols[i],round(net_profit_per_day * 30,2),monthly_mined),fg=profit_fg_colour)
+        yearly_profit.config(text="Yearly Profit = {0}{1} | Yearly mined {0}{2}".format(currency_symbols[i],round(net_profit_per_day * 365,2),yearly_mined),fg=profit_fg_colour)
         #return profit
         #print(total_electricty,price_per_kwh,coin_price,coin_per_day,profit)
     else:
-        daily_profit.config(text="Daily Profit = £{0} | Daily mined {1}".format(net_profit_per_day,round(coin_per_day,4)),fg=loss_fg_colour)
-        weekly_profit.config(text="Weekly Profit = £{0} | Daily mined {1}".format(round(net_profit_per_day * 7,2),weekly_mined),fg=loss_fg_colour)
-        monthly_profit.config(text="Monthly Profit = £{0} | Daily mined {1}".format(round(net_profit_per_day * 30,2),monthly_mined),fg=loss_fg_colour)
-        yearly_profit.config(text="Yearly Profit = £{0} | Yearly mined {1}".format(round(net_profit_per_day * 365,2),yearly_mined),fg=loss_fg_colour)
+        daily_profit.config(text="Daily Profit = {0}{1} | Daily mined {2}".format(currency_symbols[i],net_profit_per_day,round(coin_per_day,4)),fg=loss_fg_colour)
+        weekly_profit.config(text="Weekly Profit = {0}{1} | Daily mined {2}".format(currency_symbols[i],round(net_profit_per_day * 7,2),weekly_mined),fg=loss_fg_colour)
+        monthly_profit.config(text="Monthly Profit = {0}{1} | Daily mined {2}".format(currency_symbols[i],round(net_profit_per_day * 30,2),monthly_mined),fg=loss_fg_colour)
+        yearly_profit.config(text="Yearly Profit = {0}{1} | Yearly mined {2}".format(currency_symbols[i],round(net_profit_per_day * 365,2),yearly_mined),fg=loss_fg_colour)
 
 # Function to calculate ETC mined based on hash rate
 
@@ -92,11 +101,12 @@ def calculate_etc(network_hash,user_hash,block_reward,avg_block_time):
     #coin = coin_var.get()
 
     # GET COIN PRICE FROM YAHOO FINANCE
-    etc_ticker = yf.Ticker("ETC-GBP")
+    i = menu_bar_index.get()
+    etc_ticker = yf.Ticker(etc_pairs[i])
     etc_history = etc_ticker.history(period="1d") # Get current price history
     etc_price = round(etc_history.iloc[0,3],2) # store current price in variable
 
-    current_price["text"] = "Current Price of ETC-GBP: £{0}".format(etc_price)
+    current_price["text"] = "Current Price of ETC-GBP: {0}{1}".format(currency_symbols[i],etc_price)
 
 
     million.set(1e6)
@@ -147,12 +157,37 @@ def update_details():
     # Close browser once all data is scraped
     browser.quit()
 
+def set_currency_gbp():
+
+    menu_bar_index.set(0)
+
+def set_currency_usd():
+
+    menu_bar_index.set(1)
+
+def set_currency_eur():
+
+    menu_bar_index.set(2)
 
 # Create core components for GUI
 
 root = tk.Tk()
 root.title("ETC Mining Profit")
 root.geometry("900x200")
+
+######################## Creating a MenuBar ########################
+
+menu_bar = Menu(root)
+edit_menu = Menu(menu_bar,tearoff=0)
+edit_menu.add_command(label="Currency GBP",command=set_currency_gbp)
+edit_menu.add_command(label="Currency USD",command=set_currency_usd)
+edit_menu.add_command(label="Currency EUR",command=set_currency_eur)
+menu_bar.add_cascade(label="Edit", menu=edit_menu)
+
+######################## Variables for Menu Bar items ########################
+
+menu_bar_index = tk.IntVar()
+menu_bar_index.set(0) # Set default value
 
 ######################## DECLARING VARS TO STORE ENTRY VALUES ########################
 
@@ -213,7 +248,7 @@ loss_fg_colour = "red"
 frame_title = tk.Label(profits_frame,text="PROFIT CALCULATOR",fg="red")
 frame_title.place(x=200, y=10, anchor="center")
 
-current_price = tk.Label(profits_frame,text="Current Price of ETC: £{0}".format(price),fg=profit_fg_colour)
+current_price = tk.Label(profits_frame,text="Current Price of ETC: ",fg=profit_fg_colour)
 current_price.place(x=200, y=50, anchor="center")
 
 daily_profit = tk.Label(profits_frame,text="DAILY PROF",fg=profit_fg_colour)
@@ -245,4 +280,8 @@ network_block_time_lbl.place(x=200,y=100,anchor="center")
 update_network_btn = tk.Button(network_frame,text="Press to update details",command=update_details)
 update_network_btn.place(x=200,y=125,anchor="center")
 
+set_values() # Call function on startup
+
+
+root.config(menu=menu_bar)
 root.mainloop()
