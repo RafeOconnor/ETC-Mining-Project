@@ -1,8 +1,7 @@
 # GUI Mining Profit Calculator
-# Version 4
-# Changed vars in update details to global
-# This removes the need to constantly web scrape everytime user wants to calculate profit
-# Now only scrapes whenever user presses update button
+# Version 4.1
+# Price of ETC-GBP is shown at the start
+# Rather than waiting for user to calculate profit
 
 # Import necessary modules
 
@@ -12,6 +11,11 @@ from tkinter import messagebox
 import yfinance as yf
 from selenium import webdriver
 from etc_network_hash import etc_network_hashrate,etc_block_reward,etc_block_time
+
+# Get price of ETC-GBP
+etc = yf.Ticker("ETC-GBP")
+etc_hist = etc.history(period="1d")
+price = round(etc_hist.iloc[0,3],4)
 
 # Set browser
 
@@ -183,9 +187,6 @@ electricity_cost_entry.grid(row=1,column=0)
 system_wattage_entry = tk.Entry(user_variables_frame,textvariable=system_wattage_var)
 system_wattage_entry.grid(row=1,column=1)
 
-#coin_entry = tk.Entry(user_variables_frame,textvariable=coin_var)
-#coin_entry.grid(row=1,column=2)
-
 user_hash_rate_entry = tk.Entry(user_variables_frame,textvariable=user_hash_rate_var)
 user_hash_rate_entry.grid(row=1,column=2)
 
@@ -200,10 +201,6 @@ electricity_cost_lbl.grid(row=0,column=0,sticky="W")
 system_wattage_lbl = tk.Label(user_variables_frame,text="System Wattage")
 system_wattage_lbl.grid(row=0,column=1,sticky="W")
 
-#coin_lbl = tk.Label(user_variables_frame,text="Coin")
-#coin_lbl.grid(row=0,column=2,sticky="W")
-
-# NEW EDIT HERE
 # CHANGED TO USER HASH RATE
 user_hash_rate_lbl = tk.Label(user_variables_frame,text="Hash Rate MH/s")
 user_hash_rate_lbl.grid(row=0,column=2,sticky="W")
@@ -216,7 +213,7 @@ loss_fg_colour = "red"
 frame_title = tk.Label(profits_frame,text="PROFIT CALCULATOR",fg="red")
 frame_title.place(x=200, y=10, anchor="center")
 
-current_price = tk.Label(profits_frame,text="Current Price of: Insert Coin",fg=profit_fg_colour)
+current_price = tk.Label(profits_frame,text="Current Price of ETC: £{0}".format(price),fg=profit_fg_colour)
 current_price.place(x=200, y=50, anchor="center")
 
 daily_profit = tk.Label(profits_frame,text="DAILY PROF",fg=profit_fg_colour)
