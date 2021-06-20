@@ -15,7 +15,7 @@ from etc_network_hash import etc_network_hashrate,etc_block_reward,etc_block_tim
 # Get price of ETC-GBP
 etc = yf.Ticker("ETC-GBP")
 etc_hist = etc.history(period="1d")
-price = round(etc_hist.iloc[0,3],4)
+price = round(etc_hist.iloc[0,3],2)
 
 # Set browser
 
