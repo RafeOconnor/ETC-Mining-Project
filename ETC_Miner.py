@@ -1,9 +1,8 @@
 # GUI Mining Profit Calculator
-# VERSION 3!
-# Using the formual to calculate how much ETC you mine based on Hash rate
-# Now scrapes network hashrate from  website, to provide dynamic results
-# removed entry for coin and set this as ETC-GBP, it is an ETC mining calculator!
-# Added new frame to display some ETC network details; nHash etc
+# Version 4
+# Changed vars in update details to global
+# This removes the need to constantly web scrape everytime user wants to calculate profit
+# Now only scrapes whenever user presses update button
 
 # Import necessary modules
 
@@ -38,20 +37,10 @@ def set_values():
         tk.messagebox.showerror(title="Invalid Input",message="Please enter numeric values only")
         root.update()
         return
-    # Invoke browser each time button is pressed
-    # This allows multiple scrapes to happen while the program is running
-    browser = webdriver.safari.webdriver.WebDriver(quiet=False)
-
-    nhash = etc_network_hashrate(browser)
-    block_reward = etc_block_reward(browser)
-    avg_time = etc_block_time(browser)
 
     network_hashrate_lbl.config(text="Network HashRate: {0}Thash/s".format(nhash))
     network_block_reward_lbl.config(text="Block Reward: {0} ETC".format(block_reward))
     network_block_time_lbl.config(text="Avg Block Time: {0}s".format(avg_time))
-
-    # Close browser once all data is scraped
-    browser.quit()
 
     # GET COIN PRICE FROM YAHOO FINANCE
     #etc_ticker = yf.Ticker(coin)
@@ -139,6 +128,9 @@ def update_details():
     # Invoke browser each time button is pressed
     # This allows multiple scrapes to happen while the program is running
     browser = webdriver.safari.webdriver.WebDriver(quiet=False)
+
+    # Create global variables
+    global nhash,block_reward,avg_time
 
     nhash = etc_network_hashrate(browser)
     block_reward = etc_block_reward(browser)
@@ -253,7 +245,7 @@ network_block_reward_lbl.place(x=200,y=75,anchor="center")
 network_block_time_lbl = tk.Label(network_frame,text="Avg Block Time: {0}s".format(avg_time))
 network_block_time_lbl.place(x=200,y=100,anchor="center")
 
-#update_network_btn = tk.Button(network_frame,text="Press to update details",command=update_details)
-#update_network_btn.place(x=200,y=125,anchor="center")
+update_network_btn = tk.Button(network_frame,text="Press to update details",command=update_details)
+update_network_btn.place(x=200,y=125,anchor="center")
 
 root.mainloop()
