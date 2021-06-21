@@ -1,14 +1,21 @@
 # GUI Mining Profit Calculator
-# Version 5.1 - Final
+# Version 5.2 - Final | Now with the ability to select browser
+# Create tuple of popular browsers
+# Itterate through with enumerate and let user select which one to use
+# perform Try Except to prevent crashes related to incorrect browsers being selected
+
+
 
 # Import necessary modules
 
 import tkinter as tk
+import sys
 from tkinter import ttk
 from tkinter import Menu
 from tkinter import messagebox
 import yfinance as yf
 from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
 from etc_network_hash import etc_network_hashrate,etc_block_reward,etc_block_time
 
 # List of currency symbols
@@ -18,9 +25,44 @@ etc_pairs = ["ETC-GBP","ETC-USD","ETC-EUR"]
 
 etc_pair_index = 0 # Set default value
 
+# NEW BROWSER SELECTION FEATURES
+
+supported_browsers = ["Exit","safari","chrome","firefox"]
+
+# keep propmting user until valid input has been entered
+
+while(True):
+    print("Please select what browser you would like to use")
+    print("NOTE - only select the brower in which you have web drivers installed")
+    print("Type 0 to quit the program")
+
+    for i, browsers in enumerate(supported_browsers):
+        print(i,browsers)
+
+    selected_browser = int(input("Select an option"))
+
+    if selected_browser == 0:
+        sys.exit("Exiting..")
+    elif selected_browser == 1:
+        # Safari
+        try:
+            browser = webdriver.safari.webdriver.WebDriver(quiet=False)
+            break
+        except WebDriverException:
+            print("Safari Drivers not detected, quit and make sure they are installed or try a different browser")
+    elif selected_browser == 2:
+        # Chrome
+        try:
+            browser = webdriver.chrome.webdriver.WebDriver()
+            break
+        except WebDriverException:
+            print("Chrome drivers not detected, quit and make sure they are installed or try a different browser")
+    else:
+        print("Invalid option")
+
 # Set browser
 
-browser = webdriver.safari.webdriver.WebDriver(quiet=False)
+#browser = webdriver.safari.webdriver.WebDriver(quiet=False)
 
 # ETC details assumed
 # User hash can be changed by user during runtime
