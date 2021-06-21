@@ -1,9 +1,5 @@
 # GUI Mining Profit Calculator
-# Version 5
-# Need to Add a menu bar - with the ability to select different currencies
-# Need to add a function to facilitate setting the currency for all areas of the program
-# Just need to get the correct price of ETC, ie ETC-GBP/ETC-USD etc
-# Need to create a list to store currency symbols that can be accessed via indexing
+# Version 5.1 - Final
 
 # Import necessary modules
 
@@ -51,13 +47,6 @@ def set_values():
     network_block_reward_lbl.config(text="Block Reward: {0} ETC".format(block_reward))
     network_block_time_lbl.config(text="Avg Block Time: {0}s".format(avg_time))
 
-    # GET COIN PRICE FROM YAHOO FINANCE
-    #etc_ticker = yf.Ticker(coin)
-    #etc_history = etc_ticker.history(period="1d") # Get current price history
-    #etc_price = round(etc_history.iloc[0,3],2) # store current price in variable
-
-    #current_price["text"] = "Current Price of {0}: £{1}".format(coin,etc_price)
-
 
     #mining_profit(system_wattage,electricity_cost,etc_price,coin_mined)
     calculate_etc(nhash,user_hash_rate_var,block_reward,avg_time)
@@ -83,7 +72,7 @@ def mining_profit(total_electricty,price_per_kwh,coin_price,coin_per_day):
         daily_profit.config(text="Daily Profit = {0}{1} | Daily mined {2}".format(currency_symbols[i],net_profit_per_day,round(coin_per_day,4)),fg=profit_fg_colour)
         weekly_profit.config(text="Weekly Profit = {0}{1} | Weekly mined {2}".format(currency_symbols[i],round(net_profit_per_day * 7,2),weekly_mined),fg=profit_fg_colour)
         monthly_profit.config(text="Monthly Profit = {0}{1} | Monthly mined {2}".format(currency_symbols[i],round(net_profit_per_day * 30,2),monthly_mined),fg=profit_fg_colour)
-        yearly_profit.config(text="Yearly Profit = {0}{1} | Yearly mined {0}{2}".format(currency_symbols[i],round(net_profit_per_day * 365,2),yearly_mined),fg=profit_fg_colour)
+        yearly_profit.config(text="Yearly Profit = {0}{1} | Yearly mined {2}".format(currency_symbols[i],round(net_profit_per_day * 365,2),yearly_mined),fg=profit_fg_colour)
         #return profit
         #print(total_electricty,price_per_kwh,coin_price,coin_per_day,profit)
     else:
@@ -112,7 +101,7 @@ def calculate_etc(network_hash,user_hash,block_reward,avg_block_time):
     million.set(1e6)
     billion.set(1e12)
     # calculate user ratio
-    #print(type(user_hash))
+
     user_ratio = user_hash.get() * million.get() / (network_hash * billion.get())
 
     # calculate block reward per mine
@@ -137,7 +126,6 @@ def calculate_etc(network_hash,user_hash,block_reward,avg_block_time):
 
     mining_profit(system_wattage,electricity_cost,etc_price,etc_per_day)
 
-# REMOVE THIS FUNCTION
 def update_details():
     # Invoke browser each time button is pressed
     # This allows multiple scrapes to happen while the program is running
@@ -193,7 +181,6 @@ menu_bar_index.set(0) # Set default value
 
 electricity_var = tk.DoubleVar()
 system_wattage_var = tk.IntVar()
-#coin_var = tk.StringVar()
 user_hash_rate_var = tk.DoubleVar()
 million = tk.DoubleVar()
 billion = tk.DoubleVar()
