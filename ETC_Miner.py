@@ -1,8 +1,7 @@
 # GUI Mining Profit Calculator
-# Version 5.2 - Final | Now with the ability to select browser
-# Create tuple of popular browsers
-# Itterate through with enumerate and let user select which one to use
-# perform Try Except to prevent crashes related to incorrect browsers being selected
+# Version 5.4 - Completed Version
+# Error handling is in place
+# No known bugs ATM 
 
 
 
@@ -124,9 +123,13 @@ def mining_profit(total_electricty,price_per_kwh,coin_price,coin_per_day):
 # Function to calculate ETC mined based on hash rate
 
 def calculate_etc(network_hash,user_hash,block_reward,avg_block_time):
-    print(nhash)
-    electricity_cost = electricity_var.get()
-    system_wattage = system_wattage_var.get()
+    try:
+        electricity_cost = electricity_var.get()
+        system_wattage = system_wattage_var.get()
+    except tk.TclError:
+        tk.messagebox.showerror(title="Invalid Input",message="Please enter numeric values only")
+        root.update()
+        return
 
     # GET COIN PRICE FROM YAHOO FINANCE
     i = menu_bar_index.get()
