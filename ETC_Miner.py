@@ -34,6 +34,7 @@ supported_browsers = ["Exit","safari","chrome","firefox"]
 while(True):
     print("Please select what browser you would like to use")
     print("NOTE - only select the brower in which you have web drivers installed")
+    print("Check READ-ME for more information")
     print("Type 0 to quit the program")
 
     for i, browsers in enumerate(supported_browsers):
@@ -90,7 +91,6 @@ def set_values():
     network_block_time_lbl.config(text="Avg Block Time: {0}s".format(avg_time))
 
 
-    #mining_profit(system_wattage,electricity_cost,etc_price,coin_mined)
     calculate_etc(nhash,user_hash_rate_var,block_reward,avg_time)
 
 def mining_profit(total_electricty,price_per_kwh,coin_price,coin_per_day):
@@ -115,8 +115,6 @@ def mining_profit(total_electricty,price_per_kwh,coin_price,coin_per_day):
         weekly_profit.config(text="Weekly Profit = {0}{1} | Weekly mined {2}".format(currency_symbols[i],round(net_profit_per_day * 7,2),weekly_mined),fg=profit_fg_colour)
         monthly_profit.config(text="Monthly Profit = {0}{1} | Monthly mined {2}".format(currency_symbols[i],round(net_profit_per_day * 30,2),monthly_mined),fg=profit_fg_colour)
         yearly_profit.config(text="Yearly Profit = {0}{1} | Yearly mined {2}".format(currency_symbols[i],round(net_profit_per_day * 365,2),yearly_mined),fg=profit_fg_colour)
-        #return profit
-        #print(total_electricty,price_per_kwh,coin_price,coin_per_day,profit)
     else:
         daily_profit.config(text="Daily Profit = {0}{1} | Daily mined {2}".format(currency_symbols[i],net_profit_per_day,round(coin_per_day,4)),fg=loss_fg_colour)
         weekly_profit.config(text="Weekly Profit = {0}{1} | Daily mined {2}".format(currency_symbols[i],round(net_profit_per_day * 7,2),weekly_mined),fg=loss_fg_colour)
@@ -129,7 +127,6 @@ def calculate_etc(network_hash,user_hash,block_reward,avg_block_time):
     print(nhash)
     electricity_cost = electricity_var.get()
     system_wattage = system_wattage_var.get()
-    #coin = coin_var.get()
 
     # GET COIN PRICE FROM YAHOO FINANCE
     i = menu_bar_index.get()
@@ -163,8 +160,6 @@ def calculate_etc(network_hash,user_hash,block_reward,avg_block_time):
     etc_per_day = etc_per_hour * 24
 
     print(round(etc_per_day,2))
-
-    #return round(etc_per_day,5)
 
     mining_profit(system_wattage,electricity_cost,etc_price,etc_per_day)
 
