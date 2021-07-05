@@ -1,8 +1,8 @@
 # GUI Mining Profit Calculator
-# Version 5.4 - Completed Version
+# Version 5.4.5 - Completed Version
 # Error handling is in place
-# No known bugs ATM 
-
+# No known bugs ATM
+# Add exception handling in the event user has no internet connection
 
 
 # Import necessary modules
@@ -16,6 +16,26 @@ import yfinance as yf
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from etc_network_hash import etc_network_hashrate,etc_block_reward,etc_block_time
+import requests
+
+### CHECK USER IS CONNECTED TO INTERNET ###
+test_url = "http://www.google.com"
+timeout = 5
+
+while True:
+    print("Checking Internet connection...")
+    try:
+        request = requests.get(test_url,timeout=timeout)
+        print("You have internet connection, running program")
+        break
+    except requests.ConnectionError:
+        print("No internet connection, press 1 to try again or 0 to exit")
+        user_input = input("1 - Try again | 0 - Exit")
+
+        if user_input == "0":
+            sys.exit()
+        else:
+            pass
 
 # List of currency symbols
 # + List of ETC pairs
